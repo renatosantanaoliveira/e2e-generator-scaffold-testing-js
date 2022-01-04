@@ -32,7 +32,7 @@ Estrutura do projeto
 ```
 ## Configurando ambiente local
 
-Assumimos que você já ***possui o NodeJS disponível no terminal***. Agora você precisará do **npm** para baixar todas as dependências dos pacotes do projeto, conforme o arquivo **[package.json](https://github.com/renatosantanaoliveira/e2e-generator-scaffold-testing-js/package.json)**.
+Assumimos que você já ***possui o NodeJS disponível no terminal***. Agora você precisará do **npm** para baixar todas as dependências dos pacotes do projeto, conforme o arquivo **[package.json](https://github.com/renatosantanaoliveira/e2e-generator-scaffold-testing-js/blob/master/package.json)**.
 
 Para baixar as dependências de pacote deste projeto abra a pasta "**[raiz](https://github.com/renatosantanaoliveira/e2e-generator-scaffold-testing-js)**" no terminal e execute o comando:
 ```
