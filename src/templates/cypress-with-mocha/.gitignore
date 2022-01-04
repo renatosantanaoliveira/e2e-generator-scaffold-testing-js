@@ -1,0 +1,12 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# ui test
+cypress/results/*
+cypress/reports/*
+cypress/screenshots/*
+cypress/videos/*
+allure-report
+allure-results

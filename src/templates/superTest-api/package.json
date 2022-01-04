@@ -1,0 +1,21 @@
+{
+  "name": "<%= projectName %>",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "mocha '**/*.spec.js' --reporter mochawesome"
+  },
+  "keywords": [
+    "api",
+    "tests",
+    "supertest"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "faker": "^5.5.3",
+    "mocha": "^9.1.1",
+    "mochawesome": "^6.2.2",
+    "supertest": "^6.1.6"
+  }
+}

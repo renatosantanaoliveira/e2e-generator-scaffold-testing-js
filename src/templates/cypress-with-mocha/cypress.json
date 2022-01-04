@@ -1,0 +1,7 @@
+{
+    "$schema": "https://raw.githubusercontent.com/cypress-io/cypress/develop/cli/schema/cypress.schema.json",
+    "viewportWidth": 1024,
+    "viewportHeight": 800,
+    "experimentalStudio": true,
+    "projectId": "wvy8sx"
+}
