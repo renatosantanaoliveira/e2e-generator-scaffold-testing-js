@@ -23,7 +23,8 @@ Estrutura do projeto
 │   ├── index.ts
 │   ├── templates
 │   │   ├── cypress-with-cucumber
-│   │   └── cypress-with-mocha
+│   │   ├── cypress-with-mocha
+│   │   └── superTest-api
 │   └── utils
 │       └── template.ts
 ├── tsconfig.json
