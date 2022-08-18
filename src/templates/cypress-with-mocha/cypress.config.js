@@ -4,9 +4,9 @@ const allureWriter = require('@shelex/cypress-allure-plugin/writer')
 module.exports = defineConfig({
   viewportWidth: 1024,
   viewportHeight: 800,
-  specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
   projectId: 'projectId',
   e2e: {
+    specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
     setupNodeEvents(on, config) {
       allureWriter(on, config)
 
