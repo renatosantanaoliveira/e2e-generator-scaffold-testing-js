@@ -1,8 +1,8 @@
 {
   "name": "<%= projectName %>",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
-    "test": "cypress run --config video=false --env allure=true",
+    "test": "cypress run --config video=false",
     "cy:open": "cypress open",
     "allure:clear": "rm -r allure-results/ allure-report || true",
     "allure:report": "allure generate allure-results",
@@ -14,9 +14,8 @@
     "tests",
     "mocha"
   ],
-  "author": "Renato Santana de Oliveira",
   "devDependencies": {
-    "cypress": "9.2.0",
+    "cypress": "10.6.0",
     "@shelex/cypress-allure-plugin": "2.23.0",
     "faker": "^5.5.3"
   }
