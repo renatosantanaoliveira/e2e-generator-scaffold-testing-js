@@ -1,6 +1,0 @@
-{
-    "$schema": "https://raw.githubusercontent.com/cypress-io/cypress/develop/cli/schema/cypress.schema.json",
-    "defaultCommandTimeout": 10000,
-    "experimentalStudio": true,
-    "projectId": "x5z8p1"
-}
