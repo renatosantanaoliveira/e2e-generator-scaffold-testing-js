@@ -1,4 +1,4 @@
-/* global Given, Then, When */
+import { Given, When, Then, And } from "@badeball/cypress-cucumber-preprocessor";
 
 import Auth from '../pages/LoginPage'
 import Home from '../pages/HomePage'

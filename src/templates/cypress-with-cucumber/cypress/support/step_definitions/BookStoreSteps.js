@@ -1,4 +1,4 @@
-/* global Given, Then, When */
+import { Given, Then } from "@badeball/cypress-cucumber-preprocessor";
 /// <reference types="cypress" />
 
 let response

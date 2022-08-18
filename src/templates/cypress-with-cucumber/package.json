@@ -1,8 +1,8 @@
 {
   "name": "<%= projectName %>",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
-    "test": "cypress run --config video=false --env allure=true",
+    "test": "cypress run --config video=false",
     "cy:open": "cypress open",
     "cy:dash": "npx cypress run --record --key {secrets_dash}",
     "allure:clear": "rm -r allure-results/ allure-report || true",
@@ -15,16 +15,15 @@
     "tests",
     "gherkin"
   ],
-  "author": "Renato Santana de Oliveira",
   "license": "ISC",
   "devDependencies": {
-    "cypress": "9.2.0",
+    "@badeball/cypress-cucumber-preprocessor": "12.0.1",
+    "@cypress/browserify-preprocessor": "3.0.2",
     "@shelex/cypress-allure-plugin": "2.23.0",
-    "cypress-cucumber-preprocessor": "4.3.1",
+    "cypress": "10.6.0",
     "faker": "^5.5.3"
   },
-  "cypress-cucumber-preprocessor": {
-    "step_definitions": "cypress/support/steps",
-    "nonGlobalStepDefinitions": false
-  }
+  "stepDefinitions": [
+    "cypress/support/step_definitions/**/*.{js,ts}"
+  ]
 }
