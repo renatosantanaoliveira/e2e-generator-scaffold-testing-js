@@ -2,10 +2,10 @@
 [javascript-url]: https://262.ecma-international.org/6.0/
 [nodejs-image]: https://img.shields.io/badge/nodejs-14.x-green
 [nodejs-url]: https://nodejs.org/en/docs/
-[cypress-image]:https://img.shields.io/badge/cypress-9.2.0-beige
+[cypress-image]:https://img.shields.io/badge/cypress-10.6.0-beige
 [cypress-url]:https://docs.cypress.io/guides/overview/why-cypress
-[cucumber-image]: https://img.shields.io/badge/cucumber-5.3.0-brightgreen
-[cucumber-url]: https://cucumber.io/docs/installation/ruby/
+[cucumber-image]: https://img.shields.io/badge/cucumber-12.0.1-brightgreen
+[cucumber-url]: https://github.com/badeball/cypress-cucumber-preprocessor
 [supertest-image]:https://img.shields.io/badge/supertest-7.7.0-black
 [supertest-url]:https://github.com/visionmedia/supertest#readme
 # Scaffolding generator to test e2e
