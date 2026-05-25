@@ -8,107 +8,112 @@ import * as template from './utils/template';
 import * as shell from 'shelljs';
 
 const CHOICES = fs.readdirSync(path.join(__dirname, 'templates'));
-const QUESTIONS = [
-{
+const QUESTIONS: inquirer.QuestionCollection<{ template: string; name: string }> = [
+  {
     name: 'template',
     type: 'list',
     message: 'What template would you like to use?',
     choices: CHOICES
-},
-{
+  },
+  {
     name: 'name',
     type: 'input',
     message: 'Please input a new project name:'
-}];
+  }
+];
 
 export interface CliOptions {
-    projectName: string
-    templateName: string
-    templatePath: string
-    tartgetPath: string
+  projectName: string;
+  templateName: string;
+  templatePath: string;
+  targetPath: string;
 }
 
 const CURR_DIR = process.cwd();
 
-inquirer.prompt(QUESTIONS).then(answers => {
-    const projectChoice = answers['template'];
-    const projectName = answers['name'];
-    //@ts-ignore
-    const templatePath = path.join(__dirname, 'templates', projectChoice);
-    //@ts-ignore
-    const tartgetPath = path.join(CURR_DIR, projectName);
-    
-    const options: CliOptions = {
-        //@ts-ignore
-        projectName,
-        //@ts-ignore
-        templateName: projectChoice,
-        templatePath,
-        tartgetPath
-    }
+async function main() {
+  const answers = await inquirer.prompt<{ template: string; name: string }>(QUESTIONS);
+  const projectChoice = answers.template;
+  const projectName = answers.name.trim();
 
-    if (!createProject(tartgetPath)) {
-        return;
-    }
+  if (!projectName) {
+    console.error(chalk.red('Project name cannot be empty.'));
+    process.exit(1);
+  }
 
-    //@ts-ignore
-    createDirectoryContents(templatePath, projectName);
+  const templatePath = path.join(__dirname, 'templates', projectChoice);
+  const targetPath = path.join(CURR_DIR, projectName);
 
-    postProcess(options);
+  const options: CliOptions = {
+    projectName,
+    templateName: projectChoice,
+    templatePath,
+    targetPath
+  };
+
+  if (!createProject(targetPath)) {
+    return;
+  }
+
+  createDirectoryContents(templatePath, targetPath, projectName);
+
+  postProcess(options);
+}
+
+main().catch(error => {
+  console.error(chalk.red('An unexpected error occurred:'), error);
+  process.exit(1);
 });
 
 function createProject(projectPath: string) {
-    if (fs.existsSync(projectPath)) {
-        console.log(chalk.red(`Folder ${projectPath} exists. Delete or use another name.`));
-        return false;
-    }
-    fs.mkdirSync(projectPath);
-    
-    return true;
+  if (fs.existsSync(projectPath)) {
+    console.log(chalk.red(`Folder ${projectPath} exists. Delete or use another name.`));
+    return false;
+  }
+
+  fs.mkdirSync(projectPath, { recursive: true });
+  return true;
 }
 
 const SKIP_FILES = ['node_modules', '.template.json'];
 
-function createDirectoryContents(templatePath: string, projectName: string) {
-    // read all files/folders (1 level) from template folder
-    const filesToCreate = fs.readdirSync(templatePath);
-    // loop each file/folder
-    filesToCreate.forEach(file => {
-        const origFilePath = path.join(templatePath, file);
-        
-        // get stats about the current file
-        const stats = fs.statSync(origFilePath);
-    
-        // skip files that should not be copied
-        if (SKIP_FILES.indexOf(file) > -1) return;
-        
-        if (stats.isFile()) {
-            // read file content and transform it using template engine
-            let contents = fs.readFileSync(origFilePath, 'utf8');
-            contents = template.render(contents, { projectName });
-            // write file to destination folder
-            const writePath = path.join(CURR_DIR, projectName, file);
-            fs.writeFileSync(writePath, contents, 'utf8');
-        } else if (stats.isDirectory()) {
-            // create folder in destination folder
-            fs.mkdirSync(path.join(CURR_DIR, projectName, file));
-            // copy files/folder inside current folder recursively
-            createDirectoryContents(path.join(templatePath, file), path.join(projectName, file));
-        }
-    });
+function createDirectoryContents(templatePath: string, destinationPath: string, projectName: string) {
+  const filesToCreate = fs.readdirSync(templatePath);
+
+  filesToCreate.forEach(file => {
+    const origFilePath = path.join(templatePath, file);
+    const writePath = path.join(destinationPath, file);
+    const stats = fs.statSync(origFilePath);
+
+    if (SKIP_FILES.includes(file)) return;
+
+    if (stats.isFile()) {
+      let contents = fs.readFileSync(origFilePath, 'utf8');
+      contents = template.render(contents, { projectName });
+      fs.writeFileSync(writePath, contents, 'utf8');
+    } else if (stats.isDirectory()) {
+      fs.mkdirSync(writePath, { recursive: true });
+      createDirectoryContents(origFilePath, writePath, projectName);
+    }
+  });
 }
 
 function postProcess(options: CliOptions) {
-    const isNode = fs.existsSync(path.join(options.templatePath, 'package.json'));
-    if (isNode) {
-        shell.cd(options.tartgetPath);
-        const result = shell.exec('npm install');
-        if (result.code !== 0) {
-            return false;
-        }
+  const isNode = fs.existsSync(path.join(options.templatePath, 'package.json'));
+  if (isNode) {
+    if (shell.cd(options.targetPath).code !== 0) {
+      console.error(chalk.red('Failed to change directory to the new project path.'));
+      return false;
     }
-    
-    return true;
+
+    const result = shell.exec('npm install');
+    if (result.code !== 0) {
+      console.error(chalk.red('npm install failed while installing template dependencies.'));
+      return false;
+    }
+  }
+
+  return true;
 }
 
 
