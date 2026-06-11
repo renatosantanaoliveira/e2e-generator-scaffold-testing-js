@@ -33,20 +33,74 @@ Estrutura do projeto
 ```
 ## Configurando ambiente local
 
-Assumimos que você já ***possui o NodeJS disponível no terminal***. Agora você precisará do **npm** para baixar todas as dependências dos pacotes do projeto, conforme o arquivo **[package.json](https://github.com/renatosantanaoliveira/e2e-generator-scaffold-testing-js/blob/master/package.json)**.
+### Pré-requisitos
+- **Node.js 14.x** ou superior ([Download](https://nodejs.org/))
+- **npm** (vem com o Node.js)
 
-Para baixar as dependências de pacote deste projeto abra a pasta "**[raiz](https://github.com/renatosantanaoliveira/e2e-generator-scaffold-testing-js)**" no terminal e execute o comando:
+### Instalação do Scaffolding
+
+1. Clone o repositório e acesse a pasta:
+```bash
+git clone <seu-repositorio>
+cd e2e-generator-scaffold-testing-js
 ```
+
+2. Instale as dependências:
+```bash
 npm install
 ```
 
-Para execução local do scaffolding, após instalar as dependências no terminal execute o comando:
+3. Compile o projeto TypeScript:
+```bash
+npm run build
 ```
+
+4. Registre o comando `scaffold-testing` globalmente na sua máquina:
+```bash
 npm link
 ```
-O comando acima, vai definir o scaffolding como global na máquina.
 
-Para execução, deve criar uma "pasta do projeto" no diretório de sua escolha e no terminal executar o seguinte comanado:
+### Utilizando o Scaffolding para criar um novo projeto
+
+Agora você pode usar o scaffolding em **qualquer pasta** da sua máquina:
+
+```bash
+scaffold-testing
 ```
+
+O assistente vai te fazer 2 perguntas:
+1. **Qual template deseja usar?** (cypress-with-cucumber, cypress-with-mocha ou superTest-api)
+2. **Qual o nome do seu projeto?**
+
+Depois disso, o scaffolding vai:
+- Criar uma pasta com o nome do seu projeto
+- Copiar todos os arquivos do template selecionado
+- Preencer os campos dinâmicos (como o nome do projeto)
+- Instalar todas as dependências automaticamente
+
+Pronto! Sua estrutura de testes está criada e pronta para desenvolvimento! 🎉
+
+### Desenvolvimento do Scaffolding (para contribuidores)
+
+Se você quer melhorar os templates ou adicionar novos recursos:
+
+- Para testar durante o desenvolvimento (sem compilar):
+```bash
+npm start
+```
+
+- Para compilar após fazer alterações:
+```bash
+npm run build
+```
+
+- Para limpar os arquivos compilados:
+```bash
+npm run clean
+```
+
+- Após compilar, teste com o comando global:
+```bash
+npm link
 scaffold-testing
 ```
