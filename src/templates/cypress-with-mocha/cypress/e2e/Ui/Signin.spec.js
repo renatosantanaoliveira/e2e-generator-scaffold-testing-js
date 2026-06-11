@@ -1,33 +1,33 @@
 /// <reference types="cypress" />
 
-import Auth from '../../support/SignIn/SignInPage'
-import Home from '../../support/Home/HomePage'
-import {screenshot} from '../../support/utils'
+import authPage from '../../support/SignIn/SignInPage'
+import homePage from '../../support/Home/HomePage'
 
-describe('Login Demo QA', () =>{
-    beforeEach(() => {
-        cy.visit('/login')
+describe('Login - DemoQA Book Store', () => {
+  beforeEach(() => {
+    cy.visit('/login')
+  })
+
+  context('Happy path', () => {
+    it('displays the login form with username field, password field and login button visible', () => {
+      authPage.validateLogin()
     })
 
-    context('Happy path', () => {
-        it('Validate log-in screen', function () {
-            Auth.validateLogin()
-            screenshot()
-        })
+    it('redirects authenticated user to the Profile page on successful login', () => {
+      authPage.authenticateUser()
+      homePage.validateWelcomeMessage()
+    })
+  })
 
-        it('Log in successfully', function () {
-            Auth.authenticateUser()
-            Home.validateMessagemWelcome()
-            screenshot()
-        })
+  context('Alternative path', () => {
+    it('shows invalid credentials error message when logging in with a non-registered user', () => {
+      authPage.authenticateWithDataInvalid()
+      authPage.validateInvalidUserMessage()
     })
 
-    context('Alternative path', () => {
-        it('Log in with the wrong data', function () {
-            Auth.authenticateWithDataInvalid()
-            Auth.validateInvalidUserMessage()
-            screenshot()
-        })
-    });
-
+    it('shows invalid credentials error message when logging in with wrong password for a valid user', () => {
+      authPage.authenticateWithInvalidPassword()
+      authPage.validateInvalidUserMessage()
+    })
+  })
 })

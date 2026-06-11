@@ -1,25 +1,20 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+// Programmatic login via API — bypasses UI login to speed up tests that
+// need an authenticated session as a precondition, not as the subject under test.
+Cypress.Commands.add('loginViaApi', (username, password) => {
+  cy.api({
+    method: 'POST',
+    url: `${Cypress.env('apiUrl')}/Account/v1/GenerateToken`,
+    body: { userName: username, password },
+    failOnStatusCode: false,
+  }).then((response) => {
+    if (response.body.token) {
+      window.localStorage.setItem('userInfo', JSON.stringify({
+        userName: username,
+        token: response.body.token,
+        expires: response.body.expires,
+        created: response.body.created,
+        isAuthenticated: true,
+      }))
+    }
+  })
+})

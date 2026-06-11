@@ -1,10 +1,3 @@
-const request = require("supertest");
-const expect = require("chai").expect;
-
-const app = "https://bookstore.toolsqa.com/BookStore/v1";
-
-module.exports = {
-  request,
-  expect,
-  app,
-};
+// This file has been superseded by src/config/index.js
+// It is kept only for reference and should not be imported directly.
+export { config } from './src/config/index.js';

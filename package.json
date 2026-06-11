@@ -10,7 +10,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "clean": "shx rm -rf dist",
-    "build": "npm run clean && tsc && shx rm -rf dist/templates && shx cp -r src/templates dist"
+    "build": "npm run clean && tsc && shx chmod +x dist/index.js && shx rm -rf dist/templates && shx cp -r src/templates dist"
   },
   "bin": {
     "scaffold-testing": "./dist/index.js"

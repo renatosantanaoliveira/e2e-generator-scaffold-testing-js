@@ -1,29 +1,37 @@
 {
   "name": "<%= projectName %>",
-  "version": "0.0.2",
+  "version": "1.0.0",
+  "description": "Template de testes E2E com Cypress, Cucumber/Gherkin, Page Object, API Object e relatórios Allure.",
+  "author": "Renato Santana de Oliveira",
   "scripts": {
     "test": "cypress run --config video=false",
+    "test:headed": "cypress run --headed",
     "cy:open": "cypress open",
-    "cy:dash": "npx cypress run --record --key {secrets_dash}",
-    "allure:clear": "rm -r allure-results/ allure-report || true",
-    "allure:report": "allure generate allure-results",
-    "test:reporter": "npx npm-run-all allure:clear test allure:report",
-    "allure:open": "allure open allure-report"
+    "cy:run:qa": "cypress run --env version=qa",
+    "cy:run:dev": "cypress run --env version=dev",
+    "allure:clear": "rm -rf allure-results allure-report",
+    "allure:report": "allure generate allure-results --clean",
+    "allure:open": "allure open allure-report",
+    "test:allure": "npm run allure:clear && npm run test && npm run allure:report"
   },
   "keywords": [
     "cypress",
-    "tests",
-    "gherkin"
+    "cucumber",
+    "gherkin",
+    "e2e",
+    "api"
   ],
   "license": "ISC",
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "12.0.1",
-    "@cypress/browserify-preprocessor": "3.0.2",
-    "@shelex/cypress-allure-plugin": "2.23.0",
-    "cypress": "10.6.0",
-    "faker": "^5.5.3"
+    "@badeball/cypress-cucumber-preprocessor": "24.0.1",
+    "@bahmutov/cypress-esbuild-preprocessor": "2.2.8",
+    "@faker-js/faker": "10.4.0",
+    "@shelex/cypress-allure-plugin": "2.41.2",
+    "cypress": "15.15.0",
+    "cypress-plugin-api": "2.11.2",
+    "esbuild": "0.28.0"
   },
-  "stepDefinitions": [
-    "cypress/support/step_definitions/**/*.{js,ts}"
-  ]
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": "cypress/support/step_definitions/**/*.{js,ts}"
+  }
 }

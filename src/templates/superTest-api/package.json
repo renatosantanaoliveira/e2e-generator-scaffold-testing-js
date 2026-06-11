@@ -1,21 +1,40 @@
 {
   "name": "<%= projectName %>",
   "version": "1.0.0",
+  "description": "Institutional scaffolding template for REST API tests with SuperTest and Mocha",
+  "type": "module",
   "scripts": {
-    "test": "mocha '**/*.spec.js' --reporter mochawesome"
+    "test": "mocha",
+    "test:qa": "ENV=qa mocha",
+    "test:dev": "ENV=dev mocha",
+    "test:smoke": "mocha --grep \"@smoke\"",
+    "test:regression": "mocha --grep \"@regression\"",
+    "test:ci": "mocha --reporter min",
+    "report:merge": "mochawesome-merge reports/*.json > reports/combined.json",
+    "report:generate": "marge reports/combined.json --reportDir reports --reportFilename index --inline"
   },
   "keywords": [
     "api",
     "tests",
-    "supertest"
+    "supertest",
+    "mocha",
+    "api-object-pattern"
   ],
-  "author": "",
+  "author": "Renato Santana de Oliveira",
   "license": "ISC",
+  "overrides": {
+    "diff": "^9.0.0",
+    "serialize-javascript": "^7.0.5",
+    "uuid": "^14.0.0"
+  },
   "devDependencies": {
-    "chai": "^4.3.4",
-    "faker": "^5.5.3",
-    "mocha": "^9.1.1",
-    "mochawesome": "^6.2.2",
-    "supertest": "^6.1.6"
+    "@faker-js/faker": "^10.4.0",
+    "chai": "^6.2.2",
+    "dotenv": "^17.4.2",
+    "mocha": "^11.7.6",
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^5.1.1",
+    "mochawesome-report-generator": "^6.3.2",
+    "supertest": "^7.2.2"
   }
 }

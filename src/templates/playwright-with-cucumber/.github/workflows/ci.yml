@@ -1,0 +1,169 @@
+name: E2E Tests CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        description: Environment to run the tests against
+        required: true
+        default: qa
+        type: string
+      test_tag:
+        description: Optional Cucumber tag filter, for example @smoke or @regression
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.target_environment || 'qa' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      TEST_ENV: ${{ github.event.inputs.target_environment || 'qa' }}
+      TEST_TAG: ${{ github.event.inputs.test_tag || '' }}
+      SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
+      INVALID_PASSWORD: ${{ secrets.INVALID_PASSWORD }}
+      PR_FROM_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate target environment
+        run: |
+          if [ ! -f "config/${TEST_ENV}.config.ts" ]; then
+            echo "Environment '${TEST_ENV}' is not configured. Expected file: config/${TEST_ENV}.config.ts"
+            exit 1
+          fi
+
+      - name: Validate required secrets
+        run: |
+          if [ -z "${SAUCE_PASSWORD}" ]; then
+            echo "Error: SAUCE_PASSWORD secret is not set in GitHub Actions."
+            if [ "${PR_FROM_FORK}" = "true" ]; then
+              echo "This is a forked pull request, so repository secrets are not available."
+            fi
+            exit 1
+          fi
+          if [ -z "${INVALID_PASSWORD}" ]; then
+            echo "Error: INVALID_PASSWORD secret is not set in GitHub Actions."
+            if [ "${PR_FROM_FORK}" = "true" ]; then
+              echo "This is a forked pull request, so repository secrets are not available."
+            fi
+            exit 1
+          fi
+
+      - name: Restore Allure history
+        uses: actions/cache/restore@v5
+        with:
+          path: .allure-history
+          key: allure-history-${{ env.TEST_ENV }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            allure-history-${{ env.TEST_ENV }}-
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Run E2E tests
+        run: |
+          if [ -n "${TEST_TAG}" ]; then
+            npm test -- --tags "${TEST_TAG}"
+          else
+            npm test
+          fi
+        env:
+          NODE_ENV: ${{ env.TEST_ENV }}
+          SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
+          INVALID_PASSWORD: ${{ secrets.INVALID_PASSWORD }}
+
+      - name: Prepare Allure history
+        if: always()
+        run: |
+          mkdir -p allure-results
+          if [ -d ".allure-history" ]; then
+            mkdir -p allure-results/history
+            cp -R .allure-history/. allure-results/history/
+          fi
+
+      - name: Generate Allure report
+        if: always()
+        run: npm run allure:generate
+
+      - name: Preserve Allure history
+        id: preserve-allure-history
+        if: always()
+        run: |
+          rm -rf .allure-history
+          mkdir -p .allure-history
+          if [ -d "allure-report/history" ]; then
+            cp -R allure-report/history/. .allure-history/
+            echo "history_found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "history_found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Save Allure history
+        if: always() && steps.preserve-allure-history.outputs.history_found == 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: .allure-history
+          key: allure-history-${{ env.TEST_ENV }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Upload Allure report artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-report-${{ env.TEST_ENV }}
+          path: allure-report
+          retention-days: 7
+
+      - name: Upload Allure results (raw)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-results-${{ env.TEST_ENV }}
+          path: allure-results
+          retention-days: 7
+
+      - name: Upload GitHub Pages artifact
+        if: ${{ !cancelled() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_name == github.event.repository.default_branch }}
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: allure-report
+
+  deploy-pages:
+    needs: test
+    if: ${{ !cancelled() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref_name == github.event.repository.default_branch }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v6
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

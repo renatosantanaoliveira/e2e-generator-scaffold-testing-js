@@ -1,24 +1,97 @@
-name: Cypress tests dashboard
-on: [push]
+name: Cypress Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
 jobs:
+  # ─────────────────────────────────────────────
+  # Standard run — no Cypress Cloud required.
+  # Works in any repo with no additional setup
+  # beyond the two secrets listed below.
+  # ─────────────────────────────────────────────
   cypress-run:
-    name: Cypress run
-    runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        # run 4 copies of the current job in parallel
-        containers: [1, 2, 3, 4]
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
         with:
-          record: true
-          parallel: true
-          group: 'Linux/Electron'
+          browser: electron
+          command: npx cypress run --config video=false --env version=qa
         env:
-          # pass the Dashboard record key as an environment variable
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # Secrets required — add in: Settings → Secrets → Actions
+          # CYPRESS_* prefix makes them available as Cypress.env('testUsername') etc.
+          CYPRESS_testUsername: ${{ secrets.CYPRESS_TEST_USERNAME }}
+          CYPRESS_testPassword: ${{ secrets.CYPRESS_TEST_PASSWORD }}
+
+      - name: Upload screenshots on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Generate Allure report
+        if: always()
+        run: npx allure generate allure-results --clean -o allure-report
+
+      - name: Upload Allure report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-report
+          path: allure-report
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # Parallel run via Cypress Cloud.
+  # Uncomment this job and delete the job above
+  # once CYPRESS_RECORD_KEY and projectId are set.
+  #
+  # Required:
+  #   1. Set projectId in cypress.config.js
+  #      (get it from Cypress Cloud → Project settings)
+  #   2. Add CYPRESS_RECORD_KEY as a repository secret
+  # ─────────────────────────────────────────────
+  # cypress-run-parallel:
+  #   name: E2E Tests (parallel ${{ matrix.containers }}/4)
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 30
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       containers: [1, 2, 3, 4]
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - name: Run Cypress tests
+  #       uses: cypress-io/github-action@v6
+  #       with:
+  #         record: true
+  #         parallel: true
+  #         group: 'Linux/Electron'
+  #         browser: electron
+  #         command: npx cypress run --config video=false --env version=qa
+  #       env:
+  #         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  #         CYPRESS_testUsername: ${{ secrets.CYPRESS_TEST_USERNAME }}
+  #         CYPRESS_testPassword: ${{ secrets.CYPRESS_TEST_PASSWORD }}
+  #
+  #     - name: Upload screenshots on failure
+  #       uses: actions/upload-artifact@v4
+  #       if: failure()
+  #       with:
+  #         name: cypress-screenshots-${{ matrix.containers }}
+  #         path: cypress/screenshots
+  #         if-no-files-found: ignore
+  #         retention-days: 7

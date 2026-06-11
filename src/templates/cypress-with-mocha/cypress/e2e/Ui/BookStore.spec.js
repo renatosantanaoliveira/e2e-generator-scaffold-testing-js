@@ -1,41 +1,40 @@
 /// <reference types="cypress" />
 
-import store from '../../support/BookStore/BookStorePage'
-import {screenshot} from '../../support/utils'
+import bookStorePage from '../../support/BookStore/BookStorePage'
 
-describe('Book Store Demo QA', () =>{
-    beforeEach(() => {
-        cy.visit('/books')
+describe('Book Store - DemoQA', () => {
+  beforeEach(() => {
+    cy.visit('/books')
+  })
+
+  context('Happy path', () => {
+    it('renders the Book Store page with title, search input and books table visible', () => {
+      bookStorePage.validateTitle()
+      bookStorePage.validateElementsScreen()
     })
 
-    context('Happy path', () => {
-        it('Validate screen', function () {
-            store.validateTitle()
-            store.validateElementsScreen()
-            screenshot()
-        })
+    it('filters the book list to show only matching books when searching by partial title', () => {
+      const bookTitle = 'Git Pocket Guide'
 
-        it('Search book', function () {
-            const nameBook = 'Git Pocket Guide'
-            store.inputNameBook(nameBook)
-            store.validateNameBook(nameBook)
-            screenshot()
-        })
-
-        it('Click in book', function () {
-            const nameBook = 'Git Pocket Guide'
-            store.inputNameBook(nameBook)
-            store.clickInLinkNameBook()
-            store.validateDetailBook(nameBook)
-            screenshot()
-        })
+      bookStorePage.inputNameBook(bookTitle)
+      bookStorePage.validateNameBook(bookTitle)
     })
 
-    context('Alternative path', () => {
-        it('Search wrong book name', function () {
-            const nameBook = 'Invalid book'
-            store.inputNameBook(nameBook)
-            screenshot()
-        })
-    });
+    it('opens the book detail page with ISBN, title and author when clicking on Git Pocket Guide', () => {
+      const bookTitle = 'Git Pocket Guide'
+
+      bookStorePage.inputNameBook(bookTitle)
+      bookStorePage.clickInLinkNameBook()
+      bookStorePage.validateDetailBook(bookTitle)
+    })
+  })
+
+  context('Alternative path', () => {
+    it('shows no results in the books table when searching for a non-existent book title', () => {
+      const nonExistentBook = 'Invalid Book Title XYZ'
+
+      bookStorePage.inputNameBook(nonExistentBook)
+      bookStorePage.validateNoResults()
+    })
+  })
 })

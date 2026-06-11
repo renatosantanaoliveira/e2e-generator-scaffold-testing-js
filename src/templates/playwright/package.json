@@ -1,0 +1,41 @@
+{
+  "name": "<%= projectName %>",
+  "version": "1.0.0",
+  "description": "Template de automação E2E com Playwright, Page Object Model, multi-ambiente e Allure Reports. Pronto para produção com boas práticas de arquitetura, tipagem forte (TypeScript) e relatórios observáveis.",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+    "test:qa": "cross-env NODE_ENV=qa playwright test",
+    "test:dev": "cross-env NODE_ENV=dev playwright test",
+    "test:chromium": "cross-env NODE_ENV=qa playwright test --project=chromium",
+    "test:ui": "playwright test --ui",
+    "show-report": "npx playwright show-report",
+    "allure:generate": "npx allure generate allure-results --clean -o allure-report",
+    "allure:open": "npx allure open allure-report",
+    "test:allure": "cross-env NODE_ENV=qa playwright test && npx allure generate allure-results --clean -o allure-report"
+  },
+  "keywords": [
+    "playwright",
+    "e2e",
+    "testing",
+    "automation",
+    "pom",
+    "page-object-model",
+    "allure",
+    "template",
+    "qa"
+  ],
+  "author": "Renato Santana de Oliveira",
+  "license": "ISC",
+  "homepage": "./README.md",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1",
+    "cross-env": "^7.0.3",
+    "allure-playwright": "^2.0.0",
+    "allure-commandline": "^2.18.0"
+  }
+}

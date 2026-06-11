@@ -1,10 +1,12 @@
-@store
-Feature: Book Store
+@bookstore @api
+Feature: BookStore Books API
 
-    I as a user of the bookstore
-    I want to use API to search books in the store
+  As an API consumer of BookStore
+  I want to retrieve the list of available books
+  So that I can display the book catalog to users
 
-    @search
-    Scenario: Listing the books
-        Given I execute a GET in BookStore
-        Then return the booklist be successfully
+  @get-books
+  Scenario: GET /BookStore/v1/Books returns HTTP 200 with the books collection
+    When I send a GET request to the books endpoint
+    Then the response status code is 200
+    And the response body contains a non-empty list of books
