@@ -1,0 +1,30 @@
+# Generated outputs
+test-results/
+playwright-report/
+cucumber-report/
+allure-results/
+allure-report/
+
+# Auth state — never commit session tokens
+.auth/
+
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+.cache/

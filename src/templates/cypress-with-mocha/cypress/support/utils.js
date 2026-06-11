@@ -1,40 +1,20 @@
 class Util {
-    getRandomPhone() {
-        return Math.floor(Math.random() * 99999999999 + 1)
+  getRandomPhone() {
+    return Math.floor(Math.random() * 99999999999 + 1)
+  }
+
+  getRandomPassword() {
+    return Math.random().toString(36).slice(-7)
+  }
+
+  getRandomCode(length = 6) {
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    let result = ''
+    for (let i = 0; i < length; i++) {
+      result += chars[Math.floor(Math.random() * chars.length)]
     }
-
-    getRandonPassword() {
-        return Math.random().toString(36).slice(-7)
-    }
-
-    getRandonCode(){
-        this.textoAleatorio(6)
-    }
-
-    getRandonCode(tamanho) {
-        const letras = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
-        let aleatorio = '';
-        for (let i = 0; i < tamanho; i++) {
-            const rnum = Math.floor(Math.random() * letras.length);
-            aleatorio += letras.substring(rnum, rnum + 1);
-        }
-        return aleatorio;
-    }
-
-    screenshot() {
-        const dateFull = new Date();
-
-        var d = dateFull.getDate()
-        var m = dateFull.getMonth() + 1
-        var y = dateFull.getFullYear()
-        var h = dateFull.getHours()
-        var m = dateFull.getMinutes()
-        var s = dateFull.getSeconds()
-
-        var dateTimeCurrent = '' + y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d) + ' ' + h + ':' + m + s;
-
-        cy.screenshot(dateTimeCurrent)
-    }
+    return result
+  }
 }
 
 export default new Util()

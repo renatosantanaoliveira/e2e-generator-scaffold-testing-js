@@ -1,13 +1,17 @@
 {
   "name": "<%= projectName %>",
-  "version": "0.0.2",
+  "version": "1.0.0",
+  "description": "Template de testes E2E com Cypress, Mocha, Page Object, API Object e relatórios Allure.",
+  "author": "Renato Santana de Oliveira",
+  "license": "ISC",
   "scripts": {
     "test": "cypress run --config video=false",
+    "test:env": "cypress run --env version=qa --config video=false",
     "cy:open": "cypress open",
-    "allure:clear": "rm -r allure-results/ allure-report || true",
-    "allure:report": "allure generate allure-results",
-    "test:reporter": "npx npm-run-all allure:clear test allure:report",
-    "allure:open": "allure open allure-report"
+    "allure:clear": "rm -rf allure-results allure-report",
+    "allure:report": "allure generate allure-results --clean",
+    "allure:open": "allure open allure-report",
+    "test:reporter": "npm run allure:clear && npm run test && npm run allure:report"
   },
   "keywords": [
     "cypress",
@@ -15,8 +19,10 @@
     "mocha"
   ],
   "devDependencies": {
-    "cypress": "10.6.0",
-    "@shelex/cypress-allure-plugin": "2.23.0",
-    "faker": "^5.5.3"
+    "@faker-js/faker": "10.4.0",
+    "@shelex/cypress-allure-plugin": "2.41.2",
+    "allure-commandline": "2.42.1",
+    "cypress": "15.15.0",
+    "cypress-plugin-api": "2.11.2"
   }
 }

@@ -1,4 +1,5 @@
 {
-    "baseUrl": "https://...",
-    "allure": "true"
+  "baseUrl": "https://...",
+  "apiUrl": "https://...",
+  "allure": "true"
 }

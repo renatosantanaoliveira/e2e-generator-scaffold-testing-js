@@ -1,36 +1,32 @@
-import { Given, When, Then, And } from "@badeball/cypress-cucumber-preprocessor";
-
-import Auth from '../pages/LoginPage'
-import Home from '../pages/HomePage'
+import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor'
 import user from '../../fixtures/user.json'
-import screen from '../utils'
+import LoginPage from '../pages/LoginPage'
+import HomePage from '../pages/HomePage'
+import utils from '../utils'
 
-Given("that I am on the login page", () => {
-    cy.visit('/login')
-    screen.screenshot()
+Given('I am on the BookStore login page', () => {
+  LoginPage.visit()
+  LoginPage.assertPageIsLoaded()
 })
 
-When("I input username and password", () => {
-    Auth.fillFieldUsername(user.username)
-    Auth.fillFieldPassword(user.password)
-    screen.screenshot()
+When('I enter valid login credentials', () => {
+  LoginPage.fillUsername(user.username)
+  LoginPage.fillPassword(user.password)
 })
 
-And("click in button {string}", () => {
-    Auth.clickInButtonLogin()
+When('I enter invalid login credentials', () => {
+  LoginPage.fillUsername(utils.randomCode(8))
+  LoginPage.fillPassword(utils.randomPassword())
 })
 
-Then("log-in will be successfully", () => {
-    Home.validateMessagemWelcome()
-    screen.screenshot()
+When('I submit the login form', () => {
+  LoginPage.submit()
 })
 
-When("I input username and password invalid", () => {
-    Auth.authenticateWithDataInvalid()
-    screen.screenshot()
+Then('I am redirected to the profile page', () => {
+  HomePage.assertProfilePageIsLoaded()
 })
 
-Then("return message error on screen", () => {
-    Auth.validateInvalidUserMessage()
-    screen.screenshot()
+Then('I see the error message {string}', (expectedMessage) => {
+  LoginPage.assertInvalidCredentialsError(expectedMessage)
 })

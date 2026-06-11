@@ -7,7 +7,11 @@ import chalk from 'chalk';
 import * as template from './utils/template';
 import * as shell from 'shelljs';
 
-const CHOICES = fs.readdirSync(path.join(__dirname, 'templates'));
+const TEMPLATES_DIR = path.join(__dirname, 'templates');
+const CHOICES = fs.readdirSync(TEMPLATES_DIR).filter(name => {
+  if (name.startsWith('.')) return false;
+  return fs.statSync(path.join(TEMPLATES_DIR, name)).isDirectory();
+});
 const QUESTIONS: inquirer.QuestionCollection<{ template: string; name: string }> = [
   {
     name: 'template',
@@ -75,7 +79,7 @@ function createProject(projectPath: string) {
   return true;
 }
 
-const SKIP_FILES = ['node_modules', '.template.json'];
+const SKIP_FILES = ['node_modules', '.template.json', '.git'];
 
 function createDirectoryContents(templatePath: string, destinationPath: string, projectName: string) {
   const filesToCreate = fs.readdirSync(templatePath);

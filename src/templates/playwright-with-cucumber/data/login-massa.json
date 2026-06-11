@@ -1,0 +1,27 @@
+{
+  "standardUser": {
+    "username": "standard_user"
+  },
+  "lockedOutUser": {
+    "username": "locked_out_user"
+  },
+  "invalidUser": {
+    "username": "user_invalido"
+  },
+  "products": {
+    "firstProduct": {
+      "id": "sauce-labs-backpack",
+      "name": "Sauce Labs Backpack"
+    },
+    "secondProduct": {
+      "id": "sauce-labs-bike-light",
+      "name": "Sauce Labs Bike Light"
+    }
+  },
+  "messages": {
+    "invalidCredentials": "Epic sadface: Username and password do not match any user in this service",
+    "usernameRequired": "Epic sadface: Username is required",
+    "passwordRequired": "Epic sadface: Password is required",
+    "lockedOut": "Epic sadface: Sorry, this user has been locked out."
+  }
+}

@@ -1,5 +1,5 @@
 export const homeElements = {
-    HOME: {
-        TITLE_PAGE: '.playgound-header',
-    }
+  HOME: {
+    PROFILE_URL_FRAGMENT: '/profile',
+  },
 }

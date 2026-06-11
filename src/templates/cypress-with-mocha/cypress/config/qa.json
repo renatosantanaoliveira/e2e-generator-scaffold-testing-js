@@ -1,4 +1,5 @@
 {
-    "baseUrl": "https://demoqa.com",
-    "allure": "true"
+  "baseUrl": "https://demoqa.com",
+  "apiUrl": "https://bookstore.toolsqa.com",
+  "allure": "true"
 }

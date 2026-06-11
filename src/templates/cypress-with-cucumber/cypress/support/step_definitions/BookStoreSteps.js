@@ -1,18 +1,19 @@
-import { Given, Then } from "@badeball/cypress-cucumber-preprocessor";
-/// <reference types="cypress" />
+import { When, Then } from '@badeball/cypress-cucumber-preprocessor'
+import BookStoreApi from '../api/BookStoreApi'
 
-let response
+let booksResponse
 
-Given("I execute a GET in BookStore", () => {
-    cy.request({
-        method: 'GET',
-        url: 'https://bookstore.toolsqa.com/BookStore/v1/Books'
-    }).then(($res) => {
-        response = $res
-    })
+When('I send a GET request to the books endpoint', () => {
+  BookStoreApi.getBooks().then((response) => {
+    booksResponse = response
+  })
 })
 
-Then("return the booklist be successfully", () => {
-    expect(response.status).to.equal(200);
-    expect(response.body).to.be.not.empty
+Then('the response status code is {int}', (expectedStatus) => {
+  expect(booksResponse.status).to.equal(expectedStatus)
+})
+
+Then('the response body contains a non-empty list of books', () => {
+  expect(booksResponse.body).to.not.be.empty
+  expect(booksResponse.body.books).to.be.an('array').that.is.not.empty
 })

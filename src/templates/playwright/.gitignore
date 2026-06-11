@@ -1,0 +1,30 @@
+# Playwright
+test-results/
+playwright-report/
+allure-results/
+allure-report/
+
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.local
+
+# Playwright auth state (storageState)
+.auth/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+.cache/
+.gradle/

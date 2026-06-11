@@ -3,7 +3,10 @@
 /.pnp
 .pnp.js
 
-# ui test
+# local cypress secrets — never commit this file
+cypress.env.json
+
+# ui test artifacts
 cypress/results/*
 cypress/reports/*
 cypress/screenshots/*

@@ -1,23 +1,15 @@
 {
-    "compilerOptions": {
-      "outDir": "dist",
-      "target": "es5",
-      "lib": ["es6", "dom"],
-      "sourceMap": true,
-      "declaration": true,
-      "moduleResolution": "node",
-      "rootDir": "src",
-      "forceConsistentCasingInFileNames": true,
-      "noImplicitReturns": true,
-      "noImplicitThis": true,
-      "noImplicitAny": true,
-      "strictNullChecks": true,
-      "suppressImplicitAnyIndexErrors": true,
-      "noUnusedLocals": true
-    },
-    "exclude": [
-      "node_modules",
-      "dist"
-    ]
-  }
-  
+  "compilerOptions": {
+    "checkJs": true,
+    "allowJs": true,
+    "noEmit": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true
+  },
+  "include": ["src/**/*.js", "tests/**/*.js"],
+  "exclude": ["node_modules", "reports"]
+}
